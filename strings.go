@@ -79,9 +79,3 @@ func Pad(ipad, ichar interface{}, length int) interface{} {
 	return pad
 
 }
-
-func main() {
-
-	fmt.Println(string(Pad([]byte("heh"), "x", 10).([]byte)))
-
-}
