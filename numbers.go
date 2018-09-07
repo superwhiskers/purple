@@ -68,8 +68,8 @@ func (rg *RandomGenerator) Seed(seed int64) {
 
 // Random returns a pseudorandomly generated number within the range specified without resetting the seed.
 // if no parameters are provided, Random will use the same range as last time.
-// if the number of parameters is 2, it will use them as the maximum and the minumum
-// if the number of parameters is 1, it will use is as the maximum
+// if the number of parameters is 2, it will use them as the maximum and the minumum.
+// if the number of parameters is 1, it will use it as the maximum
 //
 // Parameters:
 // 	max: the maximum value allowed to be generated
@@ -96,9 +96,9 @@ func (rg *RandomGenerator) Random(args ...int) int {
 }
 
 // NextRandom returns a pseudorandomly generated number within the range and also resets the seed.
-// if no parameters are provided, NextRandom will use the same range as last time
-// if the number of parameters is 2, it will use them as the maximum and the minumum
-// if the number of parameters is 1, it will use is as the maximum
+// if no parameters are provided, NextRandom will use the same range as last time.
+// if the number of parameters is 2, it will use them as the maximum and the minumum.
+// if the number of parameters is 1, it will use it as the maximum
 //
 // Parameters:
 // 	max: the maximum value allowed to be generated
