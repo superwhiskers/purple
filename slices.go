@@ -5,6 +5,82 @@ import (
 	"reflect"
 )
 
+// ForEach executes a function on each index of an iterable
+//
+// Parameters:
+//  islice: the slice to run the function on
+//  ifunction: the function to run on each index
+// 	 Parameters:
+// 	 	index interface{}: the index the function is being run on
+// 	 	slice interface{}: the entire slice the function is being run over
+// 	 	indexNum int: the index number we are at
+//
+// 	 Returns:
+// 	 	it can only return up to one datatype, otherwise it's considered an invalid function
+//
+// Returns:
+// 	a list of all of the data that was returned by each run of the function
+func ForEach(islice, ifunction interface{}) []interface{} {
+
+	vslice := reflect.ValueOf(islice)
+	vfunction := reflect.ValueOf(ifunction)
+
+	if vfunction.Kind() != reflect.Func {
+
+		panic(fmt.Errorf("ifunction should be a function but is instead of type %s", vfunction.Kind().String()))
+
+	}
+
+	if vfunction.Type().NumIn() != 3 {
+
+		panic(fmt.Errorf("ifunction should only have three input parameters but it instead has %d", vfunction.Type().NumIn()))
+
+	}
+
+	if vfunction.Type().NumOut() > 1 {
+
+		panic(fmt.Errorf("ifunction can only have up to one return value but it instead has %d", vfunction.Type().NumOut()))
+
+	}
+
+	if vfunction.Type().In(0).Kind() != reflect.Interface {
+
+		panic(fmt.Errorf("parameter 1 of ifunction should be an interface, not %s", vfunction.Type().In(0).Kind().String()))
+
+	}
+
+	if vfunction.Type().In(1).Kind() != reflect.Interface {
+
+		panic(fmt.Errorf("parameter 2 of ifunction should be an interface, not %s", vfunction.Type().In(1).Kind().String()))
+
+	}
+
+	if vfunction.Type().In(2).Kind() != reflect.Int {
+
+		panic(fmt.Errorf("parameter 3 of ifunction should be an interface, not %s", vfunction.Type().In(2).Kind().String()))
+
+	}
+
+	returnValues := []interface{}{}
+
+	for i := 0; i < vslice.Len(); i++ {
+
+		vindex := vslice.Index(i)
+
+		returnData := vfunction.Call([]reflect.Value{vindex, vslice, reflect.ValueOf(i)})
+
+		if len(returnData) != 0 {
+
+			returnValues = append(returnValues, returnData[0].Interface())
+
+		}
+
+	}
+
+	return returnValues
+
+}
+
 // ContainsItem checks if the given slice or array has the given item
 //
 // Parameters:
