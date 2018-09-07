@@ -2,8 +2,128 @@ package purple
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
+	"sync"
+	"time"
 )
+
+// RandomGenerator holds the minimum and maximum values allowed from number generators
+//
+// Fields:
+// 	Min: the minimum value allowed from the generator
+// 	Max: the maximum value allowed from the generator
+type RandomGenerator struct {
+	Min, Max int
+	Source   *rand.Rand
+
+	randMutex sync.Mutex
+}
+
+// NewRandomGenerator makes a new RandomGenerator
+func NewRandomGenerator() *RandomGenerator {
+
+	return &RandomGenerator{
+		Min:    0,
+		Max:    10,
+		Source: rand.New(rand.NewSource(time.Now().Unix())),
+
+		randMutex: sync.Mutex{},
+	}
+
+}
+
+func (rg *RandomGenerator) random() int {
+
+	rg.randMutex.Lock()
+	defer rg.randMutex.Unlock()
+	return rg.Source.Intn(rg.Max-rg.Min+1) + rg.Min
+
+}
+
+func (rg *RandomGenerator) seed(seed int64) {
+
+	rg.randMutex.Lock()
+	defer rg.randMutex.Unlock()
+	rg.Source.Seed(seed)
+
+}
+
+// Reseed resets the seed to the current unix time
+func (rg *RandomGenerator) Reseed() {
+
+	rg.seed(time.Now().Unix())
+
+}
+
+// Seed sets the seed to the specified number
+//
+// Parameters:
+// 	seed: the seed to set as the number generator's seed
+func (rg *RandomGenerator) Seed(seed int64) {
+
+	rg.seed(seed)
+
+}
+
+// Random returns a pseudorandomly generated number within the range specified without resetting the seed.
+// if no parameters are provided, Random will use the same range as last time.
+// if the number of parameters is 2, it will use them as the maximum and the minumum
+// if the number of parameters is 1, it will use is as the maximum
+//
+// Parameters:
+// 	max: the maximum value allowed to be generated
+// 	min: the minimum value allowed to be generated
+//
+// Returns:
+// 	the generated number
+func (rg *RandomGenerator) Random(args ...int) int {
+
+	if len(args) == 2 {
+
+		rg.Max = args[0]
+		rg.Min = args[1]
+
+	} else if len(args) == 1 {
+
+		rg.Max = args[0]
+		rg.Min = 0
+
+	}
+
+	return rg.random()
+
+}
+
+// NextRandom returns a pseudorandomly generated number within the range and also resets the seed.
+// if no parameters are provided, NextRandom will use the same range as last time
+// if the number of parameters is 2, it will use them as the maximum and the minumum
+// if the number of parameters is 1, it will use is as the maximum
+//
+// Parameters:
+// 	max: the maximum value allowed to be generated
+// 	min: the minimum value allowed to be generated
+//
+// Returns:
+// 	the generated number
+func (rg *RandomGenerator) NextRandom(args ...int) int {
+
+	if len(args) == 2 {
+
+		rg.Max = args[0]
+		rg.Min = args[1]
+
+	} else if len(args) == 1 {
+
+		rg.Max = args[0]
+		rg.Min = 0
+
+	}
+
+	rg.Reseed()
+	return rg.random()
+
+}
 
 // Sum calculates the sum of the input slice and returns the float64 sum of it
 //
