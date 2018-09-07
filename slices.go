@@ -5,6 +5,66 @@ import (
 	"reflect"
 )
 
+// ContainsItem checks if the given slice or array has the given item
+//
+// Parameters:
+// 	islice: a slice or array of any type to search for iitem in
+// 	iitem: the item to search islice in
+//
+// Returns:
+// 	the index(es) of the element and a boolean if it was actually in there
+func ContainsItem(islice, iitem interface{}) ([]int, bool) {
+
+	vslice := reflect.ValueOf(islice)
+
+	indexes := []int{}
+	exists := false
+
+	for i := 0; i < vslice.Len(); i++ {
+
+		vindex := vslice.Index(i)
+
+		if reflect.DeepEqual(vindex.Interface(), iitem) {
+
+			indexes = append(indexes, i)
+			exists = true
+
+		}
+
+	}
+
+	return indexes, exists
+
+}
+
+// ContainsItemOnce checks if the given slice or array has the given item at least once
+//
+// Parameters:
+// 	islice: a slice or array of any type to search for iitem in
+// 	iitem: the item to search islice in
+//
+// Returns:
+// 	the index of the element and a boolean if it was actually in there
+func ContainsItemOnce(islice, iitem interface{}) (int, bool) {
+
+	vslice := reflect.ValueOf(islice)
+
+	for i := 0; i < vslice.Len(); i++ {
+
+		vindex := vslice.Index(i)
+
+		if reflect.DeepEqual(vindex.Interface(), iitem) {
+
+			return i, true
+
+		}
+
+	}
+
+	return -1, false
+
+}
+
 // RemoveUnordered removes an index from a slice without regards to order of the slice
 //
 // Parameters:
@@ -19,8 +79,8 @@ func RemoveUnordered(islice, iindex interface{}) interface{} {
 
 	vindex := reflect.ValueOf(iindex)
 	vslice := reflect.ValueOf(islice)
-	indexType := vindex.Type()
 
+	indexType := vindex.Type()
 	switch indexType.Kind() {
 
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:

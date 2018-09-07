@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Pad pads a slice or string with the specified character to the specified length
+// Pad pads a byte slice or string with the specified character to the specified length
 //
 // Parameters:
 // 	ipad: the byte slice or string to pad
