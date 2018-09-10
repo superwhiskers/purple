@@ -81,7 +81,7 @@ func ForEach(islice, ifunction interface{}) []interface{} {
 
 }
 
-// ContainsItem checks if the given slice or array has the given item
+// IndexesOf gives you the indexes of every occurence of the given item in the given slice
 //
 // Parameters:
 // 	islice: a slice or array of any type to search for iitem in
@@ -89,7 +89,7 @@ func ForEach(islice, ifunction interface{}) []interface{} {
 //
 // Returns:
 // 	the index(es) of the element and a boolean if it was actually in there
-func ContainsItem(islice, iitem interface{}) ([]int, bool) {
+func IndexesOf(islice, iitem interface{}) ([]int, bool) {
 
 	vslice := reflect.ValueOf(islice)
 
@@ -113,7 +113,7 @@ func ContainsItem(islice, iitem interface{}) ([]int, bool) {
 
 }
 
-// ContainsItemOnce checks if the given slice or array has the given item at least once
+// IndexOf gives you the index of the first occurence of the given item in the given slice
 //
 // Parameters:
 // 	islice: a slice or array of any type to search for iitem in
@@ -121,11 +121,39 @@ func ContainsItem(islice, iitem interface{}) ([]int, bool) {
 //
 // Returns:
 // 	the index of the element and a boolean if it was actually in there
-func ContainsItemOnce(islice, iitem interface{}) (int, bool) {
+func IndexOf(islice, iitem interface{}) (int, bool) {
 
 	vslice := reflect.ValueOf(islice)
 
 	for i := 0; i < vslice.Len(); i++ {
+
+		vindex := vslice.Index(i)
+
+		if reflect.DeepEqual(vindex.Interface(), iitem) {
+
+			return i, true
+
+		}
+
+	}
+
+	return -1, false
+
+}
+
+// LastIndexOf gives you the index of the last occurence of the given item in the given slice
+//
+// Parameters:
+// 	islice: a slice or array of any type to search for iitem in
+// 	iitem: the item to search islice in
+//
+// Returns:
+// 	the index of the element and a boolean if it was actually in there
+func LastIndexOf(islice, iitem interface{}) (int, bool) {
+
+	vslice := reflect.ValueOf(islice)
+
+	for i := vslice.Len() - 1; i > -1; i-- {
 
 		vindex := vslice.Index(i)
 
